@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Pet Store</title>
+</head>
+<body>
+    <div id="petStore">
+        <h1>{{ welcomeMessage }}</h1>
+        <button @click="toggleDisplayCart" :disabled="numberOfItems === 0">
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            Checkout ({{ numberOfItems }})
+        </button>
+        <br>
+        <br>
+        <div v-if="!displayCart">
+            <img v-bind:src="product.image"/>
+            <h2 v-text="product.title"></h2>
+            <p v-text="product.id"></p>
+            <p v-text="product.description"></p>
+            <p>Price: {{product.price}}</p>
+            <p>Available slots: {{ product.availability }}</p>
+            <button @click="addToCart" :disabled="!canAddToCart">Add to Cart</button>
+        </div>
+        <div v-else>Welcome to Checkout!</div>
+    </div>
+
+    <script>
+        const {createApp} = Vue
+        const myApp = Vue.createApp({
+            data() {
+                return {
+                    welcomeMessage: 'Welcome to the Pet Store!',
+                    cart: [],
+                    displayCart: false,
+                    product: {
+                        id: 777,
+                        title: 'Happy Tails!',
+                        description: 'Food that will make your dog wag its tail',
+                        price: 500,
+                        availability: 5,
+                        image: 'Images/product-fullsize.png'
+                        // image: 'Images/penguin.png'
+                    }
+                }
+            },
+
+            computed: {
+                canAddToCart() {
+                    return this.product.availability > 0
+                },
+                numberOfItems() {
+                    return this.cart.length
+                }
+            },
+
+            methods: {
+                toggleDisplayCart() {
+                    this.displayCart = !this.displayCart
+                },
+                addToCart() {
+                    if (!this.canAddToCart) 
+                        return
+                    this.cart.push(this.product.id)
+                    this.product.availability -= 1
+                }
+            }
+        })
+
+        myApp.mount('#petStore')
+    </script>
+    
+</body>
+</html>
